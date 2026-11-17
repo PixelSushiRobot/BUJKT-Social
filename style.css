@@ -161,6 +161,19 @@ o-header o-global-search {
   height: calc(100dvh - var(--app-shell-header-height-desktop, 64px));
   overflow: hidden;
 }
+#psr-center .psr-notifications { position: relative; }
+
+/* "New notifications" pill, shown while Notifications is open */
+.psr-new-pill {
+  position: absolute; top: 68px; left: 50%; z-index: 5;
+  transform: translateX(-50%);
+  display: none; align-items: center; gap: 6px;
+  padding: 6px 14px; border: 0; border-radius: 999px;
+  background: var(--color-primary); color: var(--color-primary-content);
+  font: inherit; font-size: 0.875rem; cursor: pointer;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+}
+.psr-new-pill.psr-show { display: inline-flex; }
 #psr-center .psr-notifications iframe,
 #psr-center .psr-messages iframe,
 #psr-center .psr-bookmarks iframe {

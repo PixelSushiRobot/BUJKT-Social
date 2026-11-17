@@ -36,7 +36,9 @@
         <input type="search" name="q" placeholder="Search social" aria-label="Search social" autocomplete="off">
       </form>
     </div>
-    <div class="psr-notifications"></div>
+    <div class="psr-notifications">
+      <button type="button" class="psr-new-pill"><i class="ph ph-arrow-up"></i><span>New notifications</span></button>
+    </div>
     <div class="psr-messages"></div>
     <div class="psr-bookmarks"></div>`;
 
@@ -99,6 +101,7 @@
       center.id = CENTER_ID;
       center.innerHTML = CENTER_HTML;
       center.querySelector('form.psr-own').addEventListener('submit', onSearch);
+      center.querySelector('.psr-new-pill').addEventListener('click', refreshNotifications);
       log('Feed column found', col);
       // Start loading notifications early so they're ready when opened
       setTimeout(() => ensureFrame('notifications'), 2000);
@@ -156,6 +159,46 @@
     sendFilter();
   }
 
+  // The panel doesn't update by itself, so reload it when the bell's count
+  // goes up: straight away while it's hidden, or from the "New notifications"
+  // pill while it's open (so the list doesn't jump while you read it).
+  // The filter is applied again once it has loaded (see sendFilter).
+  let lastNotifCount = null;
+  function onNotifCount(count) {
+    const prev = lastNotifCount;
+    lastNotifCount = count;
+    if (prev === null || !count || count === prev) return;
+    const more = !prev || count === '•' || parseInt(count, 10) > parseInt(prev, 10);
+    if (!more) return;
+    log('New notifications', prev, '→', count);
+    if (view === 'notifications') setPill(true);
+    else refreshNotifications();
+  }
+
+  function refreshNotifications() {
+    setPill(false);
+    const frame = document.querySelector('iframe[name="psr-notifications"]');
+    try { frame?.contentWindow.location.reload(); } catch { if (frame) frame.src = FRAMES.notifications; }
+  }
+
+  function setPill(show) {
+    document.querySelector(`#${CENTER_ID} .psr-new-pill`)?.classList.toggle('psr-show', show);
+  }
+
+  // The open panel is kept in the address (/social#notifications), so a
+  // browser refresh comes back to it instead of the feed
+  const HASH_VIEWS = ['notifications', 'messages', 'bookmarks'];
+  const hashView = () => {
+    const v = location.hash.slice(1);
+    return location.pathname === '/social' && HASH_VIEWS.includes(v) ? v : null;
+  };
+  function saveView(v) {
+    if (location.pathname !== '/social') return;
+    const hash = HASH_VIEWS.includes(v) ? '#' + v : '';
+    if (location.hash === hash) return;
+    history.replaceState(history.state, '', location.pathname + location.search + hash);
+  }
+
   function setView(v) {
     // Any other choice cancels a filtered Notifications that's still loading
     if (v !== 'notifications' && pendingFilter) {
@@ -163,6 +206,7 @@
       document.querySelector(`#${HOST_ID} [data-psr-nav="notifications"]`)?.classList.remove('psr-loading');
     }
     view = v;
+    saveView(v);
     if (FRAMES[v]) ensureFrame(v);
     render();
     if (v === 'search') focusSearch();
@@ -190,11 +234,12 @@
     const rail = document.querySelector(RAIL);
     root.classList.toggle('psr-has-rail', !!rail);
 
-    // A real page change (link click, back button, search) resets the view
+    // A real page change (link click, back button, search) resets the view,
+    // unless the address names a panel (e.g. after a browser refresh)
     const url = location.pathname + location.search;
     if (url !== lastUrl) {
       lastUrl = url;
-      view = searchQuery() ? 'search' : 'feed';
+      view = searchQuery() ? 'search' : hashView() || 'feed';
     }
     VIEWS.forEach(v => root.classList.toggle('psr-view-' + v, !!rail && view === v));
     if (!rail) return;
@@ -205,6 +250,8 @@
     }
 
     const nav = setup(rail);
+    if (FRAMES[view]) ensureFrame(view);
+    if (view !== 'notifications') setPill(false);
     nav.querySelectorAll('[data-psr-nav]').forEach(el =>
       el.classList.toggle('psr-active', el.dataset.psrNav === view)
     );
@@ -219,10 +266,11 @@
 
     // Copy the unread counts from the (hidden) header bell and Messages buttons
     nav.querySelectorAll('[data-psr-nav] .psr-nav-badge').forEach(badge => {
-      const source = document.querySelector(BADGE_SOURCES[badge.closest('[data-psr-nav]').dataset.psrNav]);
-      const count = unreadCount(source);
+      const kind = badge.closest('[data-psr-nav]').dataset.psrNav;
+      const count = unreadCount(document.querySelector(BADGE_SOURCES[kind]));
       if (badge.textContent !== count) badge.textContent = count;
       badge.classList.toggle('psr-dot', count === '•');
+      if (kind === 'notifications') onNotifCount(count);
     });
   }
 
@@ -253,7 +301,11 @@
       else go('/social');
       return;
     }
-    if (kind === 'notifications') openNotifications(null);
+    if (kind === 'notifications') {
+      // Clicking it again while new ones are waiting loads them
+      if (view === 'notifications' && document.querySelector(`#${CENTER_ID} .psr-new-pill.psr-show`)) refreshNotifications();
+      openNotifications(null);
+    }
     else setView(kind);
   }
 
