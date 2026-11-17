@@ -1,0 +1,522 @@
+/* --- Social nav at the top of the left rail --- */
+#psr-nav-rail .psr-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#psr-nav-rail .psr-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-field, 0.5rem);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+#psr-nav-rail .psr-nav-row:hover {
+  background: var(--color-base-200, rgba(127, 127, 127, 0.1));
+}
+#psr-nav-rail .psr-nav-row.psr-active {
+  color: var(--color-primary, #6d5dfc);
+  background: color-mix(in oklab, var(--color-primary, #6d5dfc) 10%, transparent);
+}
+#psr-nav-rail .psr-nav-row > i {
+  flex-shrink: 0;
+  font-size: 22px;
+}
+#psr-nav-rail .psr-nav-badge {
+  margin-left: auto;
+  min-width: 18px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--color-primary, #6d5dfc);
+  color: var(--color-primary-content, #fff);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+#psr-nav-rail .psr-nav-badge:empty {
+  display: none;
+}
+/* Unread without a number */
+#psr-nav-rail .psr-nav-badge.psr-dot {
+  width: 8px;
+  min-width: 0;
+  height: 8px;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+}
+
+/* --- Feed column panel: search bar, notifications, messages, bookmarks --- */
+#psr-center {
+  display: none;
+}
+html.psr-view-search #psr-center,
+html.psr-view-notifications #psr-center,
+html.psr-view-messages #psr-center,
+html.psr-view-bookmarks #psr-center {
+  display: block;
+}
+/* Notifications, Messages and Bookmarks take the column over; Search sits above the feed */
+html.psr-view-notifications .psr-center-col > :not(#psr-center),
+html.psr-view-messages .psr-center-col > :not(#psr-center),
+html.psr-view-bookmarks .psr-center-col > :not(#psr-center) {
+  display: none !important;
+}
+#psr-center > * {
+  display: none;
+}
+html.psr-view-search #psr-center .psr-search,
+html.psr-view-notifications #psr-center .psr-notifications,
+html.psr-view-messages #psr-center .psr-messages,
+html.psr-view-bookmarks #psr-center .psr-bookmarks {
+  display: block;
+}
+#psr-center .psr-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-base-300, rgba(127, 127, 127, 0.25));
+}
+/* objkt's own search box, moved down from the header */
+html.psr-real-search #psr-center .psr-search form.psr-own {
+  display: none;
+}
+#psr-center .psr-search o-global-search {
+  display: block;
+  width: 100%;
+  pointer-events: auto;
+}
+#psr-center .psr-search o-global-search form {
+  width: 100%;
+  max-width: none;
+}
+#psr-center .psr-search form.psr-own {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-base-300, rgba(127, 127, 127, 0.25));
+  border-radius: 9999px;
+  background: var(--color-base-200, rgba(127, 127, 127, 0.08));
+}
+#psr-center .psr-search form.psr-own:focus-within {
+  border-color: var(--color-primary, #6d5dfc);
+}
+#psr-center .psr-search form.psr-own i {
+  font-size: 18px;
+  opacity: 0.6;
+}
+#psr-center .psr-search form.psr-own input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  outline: none;
+  font: inherit;
+}
+/* Messages and Bookmarks hide the right rail and use its space */
+html:is(.psr-view-messages, .psr-view-bookmarks) o-feed-layout div:has(> o-social-feed-discovery-rail) {
+  display: none !important;
+}
+@media (min-width: 1024px) {
+  html:is(.psr-view-messages, .psr-view-bookmarks) .psr-center-col {
+    grid-column: 2 / -1 !important;
+  }
+}
+
+/* Both rails stay put under the header while the feed scrolls, and scroll
+   on their own. The nav (left) and Followers/Following (right) stay pinned
+   at the top of their rail. */
+@media (min-width: 1024px) {
+  o-social-feed-left-rail > aside,
+  o-social-feed-discovery-rail > aside {
+    top: var(--app-shell-header-height-desktop, 64px) !important;
+    height: calc(100dvh - var(--app-shell-header-height-desktop, 64px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  o-social-feed-left-rail > aside > #psr-nav-rail,
+  o-social-feed-discovery-rail > aside > section:first-child {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-base-100, #fff);
+  }
+}
+
+/* The header search box is hidden everywhere; Search shows it in the feed column */
+o-header o-global-search {
+  display: none !important;
+}
+
+/* Notifications, Messages and Bookmarks panels fill the screen below the header */
+#psr-center .psr-notifications,
+#psr-center .psr-messages,
+#psr-center .psr-bookmarks {
+  height: calc(100dvh - var(--app-shell-header-height-desktop, 64px));
+  overflow: hidden;
+}
+#psr-center .psr-notifications iframe,
+#psr-center .psr-messages iframe,
+#psr-center .psr-bookmarks iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Header icons that now live in the left rail (only where the rail exists) */
+html.psr-has-rail o-header button[popovertarget="desktop-notifications-popover"],
+html.psr-has-rail o-header button[data-header-messages] {
+  display: none !important;
+}
+
+
+/* --- Right rail: one-line Tezos ticker ("$0.214 · 1 XTZ = 1 XTZ", set by rail.js).
+   Matched by its chart too, so objkt's full box never shows before rail.js runs. --- */
+o-social-feed-discovery-rail > aside > :is(section.psr-ticker, section:has(svg[aria-label^="Tezos price"])) {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+o-social-feed-discovery-rail > aside > :is(section.psr-ticker, section:has(svg[aria-label^="Tezos price"])) > :not(.psr-tick) {
+  display: none !important;
+}
+section.psr-ticker > .psr-tick {
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+section.psr-ticker > .psr-tick > span {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+}
+
+/* --- Right rail: Needs your attention + New drops --- */
+#psr-rail-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#psr-rail-cards a {
+  color: inherit;
+}
+#psr-rail-cards .psr-rc-title {
+  margin-bottom: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+#psr-rail-cards .psr-rc-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+#psr-rail-cards .psr-rc-title-row .psr-rc-title {
+  margin: 0;
+}
+#psr-rail-cards .psr-rc-empty {
+  font-size: 0.8125rem;
+  color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+}
+#psr-rail-cards .psr-rc-group + .psr-rc-group {
+  margin-top: 12px;
+}
+#psr-rail-cards .psr-rc-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  text-align: left;
+}
+#psr-rail-cards button.psr-rc-head {
+  cursor: pointer;
+}
+#psr-rail-cards button.psr-rc-head:hover {
+  color: var(--color-base-content);
+}
+#psr-rail-cards .psr-rc-head > i:first-child {
+  font-size: 16px;
+}
+#psr-rail-cards .psr-rc-count {
+  font-weight: 500;
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+}
+#psr-rail-cards .psr-rc-fresh {
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  font-size: 0.6875rem;
+  line-height: 16px;
+}
+#psr-rail-cards .psr-rc-go {
+  margin-left: auto;
+}
+#psr-rail-cards .psr-rc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-field, 0.5rem);
+  transition: background-color 0.15s;
+}
+#psr-rail-cards .psr-rc-item:hover {
+  background: var(--color-base-200);
+}
+#psr-rail-cards .psr-rc-thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: var(--radius-field, 0.375rem);
+  background: var(--color-base-200);
+}
+#psr-rail-cards .psr-rc-thumb img,
+#psr-rail-cards .psr-rc-slide-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#psr-rail-cards .psr-rc-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+#psr-rail-cards .psr-rc-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+}
+#psr-rail-cards .psr-rc-badge {
+  padding: 0 6px;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+#psr-rail-cards .psr-rc-badge.psr-good {
+  background: color-mix(in oklab, var(--color-success, #16a34a) 18%, transparent);
+  color: var(--color-success, #16a34a);
+}
+#psr-rail-cards .psr-rc-badge.psr-up {
+  background: color-mix(in oklab, var(--color-info, #0284c7) 16%, transparent);
+  color: var(--color-info, #0284c7);
+}
+/* Countdowns, red in the last hour */
+#psr-rail-cards .psr-rc-left {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#psr-rail-cards .psr-rc-slide-meta .psr-rc-left {
+  margin: 0;
+}
+#psr-rail-cards .psr-rc-left.psr-soon {
+  color: var(--color-error, #dc2626);
+}
+#psr-rail-cards .psr-rc-sub,
+#psr-rail-cards .psr-rc-slide-name,
+#psr-rail-cards .psr-rc-slide-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#psr-rail-cards .psr-rc-sub {
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+}
+
+/* Slideshow: one work at a time, cross-fading */
+#psr-rail-cards .psr-rc-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+}
+#psr-rail-cards .psr-rc-nav button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+#psr-rail-cards .psr-rc-nav button:hover {
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+}
+#psr-rail-cards .psr-rc-pos {
+  min-width: 36px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+#psr-rail-cards .psr-rc-stage {
+  display: grid;
+}
+#psr-rail-cards .psr-rc-slide {
+  display: flex;
+  grid-area: 1 / 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+#psr-rail-cards .psr-rc-slide.psr-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+#psr-rail-cards .psr-rc-slide-img {
+  display: block;
+  aspect-ratio: 1;
+  margin-bottom: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-box, 0.5rem);
+  background: var(--color-base-200);
+}
+#psr-rail-cards .psr-rc-slide:hover .psr-rc-slide-name {
+  text-decoration: underline;
+}
+#psr-rail-cards .psr-rc-slide-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+#psr-rail-cards .psr-rc-slide-meta {
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+}
+
+/* Slideshow source tabs and controls under the image */
+#psr-rail-cards .psr-rc-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin-bottom: 10px;
+  padding: 2px;
+  border-radius: 9999px;
+  background: var(--color-base-200);
+}
+#psr-rail-cards .psr-rc-tabs button {
+  padding: 4px 6px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+  white-space: nowrap;
+  cursor: pointer;
+}
+#psr-rail-cards .psr-rc-tabs button[aria-selected="true"] {
+  background: var(--color-base-100);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  font-weight: 600;
+  color: var(--color-base-content);
+}
+#psr-rail-cards .psr-rc-slides .psr-rc-nav {
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* Your stats: 2 × 2 grid */
+#psr-rail-cards .psr-rc-link {
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent) !important;
+}
+#psr-rail-cards .psr-rc-link:hover {
+  color: var(--color-base-content) !important;
+  text-decoration: underline;
+}
+#psr-rail-cards .psr-rc-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+#psr-rail-cards .psr-rc-stat {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 8px 10px;
+  border-radius: var(--radius-field, 0.5rem);
+  background: var(--color-base-200);
+}
+#psr-rail-cards .psr-rc-stat-label,
+#psr-rail-cards .psr-rc-stat-sub {
+  overflow: hidden;
+  font-size: 0.6875rem;
+  color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#psr-rail-cards .psr-rc-stat-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#psr-rail-cards .psr-rc-me {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+#psr-rail-cards .psr-rc-me input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 9999px;
+  background: transparent;
+  font-size: 0.75rem;
+  outline: none;
+}
+#psr-rail-cards .psr-rc-me input:focus {
+  border-color: var(--color-primary);
+}
+#psr-rail-cards .psr-rc-me button {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--color-base-content);
+  color: var(--color-base-100);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* Notifications nav item while a filtered view is being prepared */
+#psr-nav-rail .psr-nav-row.psr-loading > i {
+  animation: psr-pulse 0.9s ease-in-out infinite alternate;
+}
+@keyframes psr-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.3; }
+}
+
+/* objkt's "Curated for you" section: shown inside For you instead */
+o-social-feed-discovery-rail > aside > section.psr-curated {
+  display: none !important;
+}
+#psr-rail-cards .psr-rc-picks img {
+  max-width: 100%;
+  border-radius: var(--radius-field, 0.375rem);
+}
+#psr-rail-cards .psr-rc-picks a:hover {
+  opacity: 0.85;
+}

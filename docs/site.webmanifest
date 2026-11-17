@@ -1,0 +1,23 @@
+{
+  "name": "BUJKT Social",
+  "short_name": "BUJKT Social",
+  "description": "A smoother objkt social feed: notifications, messages and price-sorted bookmarks in one place.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
