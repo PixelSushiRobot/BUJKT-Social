@@ -210,10 +210,9 @@
     /* Bookmarks fill the panel edge to edge */
     dialog.psr-hub o-profile-bookmarks { display: block; padding: 0 16px 24px; }
     #${BAR_ID} {
-      position: sticky; top: 0; z-index: 2;
       display: flex; align-items: center; gap: 12px;
-      margin: 0 -16px 12px; padding: 10px 16px;
-      border-bottom: 1px solid var(--color-base-300); background: var(--color-base-100);
+      margin: 0 0 12px; padding: 8px 0;
+      border-bottom: 1px solid var(--color-base-300);
       font-size: 0.8125rem; color: color-mix(in oklab, var(--color-base-content) 65%, transparent);
     }
     #${BAR_ID} b { font-weight: 600; color: var(--color-base-content); }

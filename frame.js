@@ -9,10 +9,14 @@
   root.classList.add('psr-frame', 'psr-frame-' + kind);
   // Panels showing a Profile hub tab, and the tab each one shows
   const HUB_TABS = { notifications: 'Notifications', bookmarks: 'Bookmarks' };
+  // The element each tab renders, so the hub only shows once it's there
+  const HUB_CONTENT = { notifications: 'o-profile-notifications', bookmarks: 'o-profile-bookmarks' };
 
   const style = document.createElement('style');
   style.textContent = `
-    o-header, header, o-app-shell-header { display: none !important; }
+    /* The site header only: toolbars inside the hub (e.g. Bookmarks' search
+       and sort buttons) are <header>s too */
+    o-header, o-app-shell-header, header:not(dialog header) { display: none !important; }
     :root { --app-shell-header-height-desktop: 0px !important; }
 
     /* Notifications and Bookmarks: only that Profile hub tab, filling the frame.
@@ -27,7 +31,9 @@
     dialog.psr-hub { padding: 0 !important; background: var(--color-base-100) !important; }
     html.psr-hub-ready dialog.psr-hub { visibility: visible; }
     #mobile-menu-popover { visibility: hidden !important; }
-    dialog.psr-hub::backdrop { background: transparent !important; }
+    /* No dimmed backdrop or open animation, even before the hub is tagged */
+    html.psr-hub-frame dialog::backdrop { background: transparent !important; backdrop-filter: none !important; }
+    html.psr-hub-frame dialog { animation: none !important; transition: none !important; }
     dialog.psr-hub .profile-hub-modal-frame {
       width: 100vw !important; max-width: none !important;
       height: 100vh !important; max-height: none !important;
@@ -198,26 +204,36 @@
   }
 
   // Open the Profile hub on the given tab, and reopen it if it closes.
-  // Everything here happens out of sight (see the CSS above).
+  // Everything here happens out of sight (see the CSS above): the hub only
+  // shows once its tab is selected and that tab's content has rendered.
   function keepHubOpen(label) {
     let tries = 0;
+    let waited = 0; // ticks spent on the right tab without its content
     setInterval(() => {
       const dialog = document.querySelector('dialog[open]:has(.profile-hub-modal-box)');
       if (dialog) {
         dialog.classList.add('psr-hub');
-        const tab = [...dialog.querySelectorAll('[role="tab"]')].find(t => t.textContent.trim() === label);
-        const onTab = !tab || tab.getAttribute('aria-selected') === 'true';
-        if (!onTab) tab.click();
-        root.classList.toggle('psr-hub-ready', onTab);
         const menu = document.getElementById('mobile-menu-popover');
         if (menu?.matches(':popover-open')) menu.hidePopover();
+        const tab = [...dialog.querySelectorAll('[role="tab"]')].find(t => t.textContent.trim() === label);
+        if (!tab) { root.classList.remove('psr-hub-ready'); return; }
+        if (tab.getAttribute('aria-selected') !== 'true') {
+          tab.click();
+          waited = 0;
+          root.classList.remove('psr-hub-ready');
+          return;
+        }
+        // Don't wait forever if objkt renames the tab's element
+        const rendered = dialog.querySelector(HUB_CONTENT[kind]) || ++waited > 20;
+        root.classList.toggle('psr-hub-ready', !!rendered);
         return;
       }
+      waited = 0;
       root.classList.remove('psr-hub-ready');
       const item = hubItem(label);
       if (item) item.click();
       // The menu may only build its items once it has been opened
       else if (tries++ % 6 === 0) document.querySelector('[popovertarget="mobile-menu-popover"]')?.click();
-    }, 250);
+    }, 100);
   }
 })();
