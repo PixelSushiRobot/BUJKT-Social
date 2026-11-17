@@ -1,7 +1,7 @@
 {
   "name": "BUJKT Social",
   "short_name": "BUJKT Social",
-  "description": "A smoother objkt social feed: notifications, messages and price-sorted bookmarks in one place.",
+  "description": "Makes Objkt Social smoother: notifications, messages and price-sorted bookmarks in one place.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#0a0a0b",

@@ -1,5 +1,5 @@
 // BUJKT Social: the Bookmarks panel (the frame named "psr-bookmarks"), which
-// shows the Profile hub's Bookmarks tab. Ported from BUJKT, with:
+// shows the Profile hub's Bookmarks tab. Adds:
 //  - every bookmark loaded automatically (objkt shows a few at a time)
 //  - sort by price that stays applied as cards load, low → high or high → low
 //  - artworks without a "Buy" price kept at the end instead of hidden
@@ -26,7 +26,7 @@
 
   const bookmarks = () => document.querySelector(`${MODAL} o-profile-bookmarks`);
 
-  // The grid: the <div class="list"> with the most cards (as in BUJKT)
+  // The grid: the <div class="list"> with the most cards
   function grid() {
     const root = bookmarks();
     if (!root) return null;

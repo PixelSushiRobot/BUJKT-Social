@@ -1,13 +1,11 @@
 # BUJKT Social
 
-BUJKT Social is an unpublished Chrome extension that makes the Objkt social feed smoother: notifications, messages and price-sorted bookmarks in one place, without leaving the feed.
-
-It's the follow-up to [BUJKT](https://github.com/PixelSushiRobot/BUJKT), which sorts your Objkt bookmarks by price. That feature now lives here too.
+BUJKT Social is an unpublished Chrome extension that makes Objkt Social smoother: notifications, messages and price-sorted bookmarks in one place, without leaving the feed.
 
 > [!WARNING]
-> BUJKT Social is an **unofficial, personal-use tool**. It is **not affiliated with, authorized by, or endorsed by objkt AG** or the OBJKT Marketplace. The name "BUJKT" is a fan wordplay and is not associated with the official objkt brand.
+> BUJKT Social is an **unofficial, personal-use tool**. It is **not affiliated with, authorized by, or endorsed by objkt AG** or the OBJKT Marketplace. The name "BUJKT Social" is fan wordplay and is not associated with the official objkt or Objkt Social brands.
 >
-> **Use at your own risk.** BUJKT Social runs in your own browser and changes how objkt's pages look and behave. Unlike BUJKT, it also:
+> **Use at your own risk.** BUJKT Social runs in your own browser and changes how objkt's pages look and behave. It also:
 >
 > - loads objkt pages in hidden panels, and opens the Profile hub, its tabs, filters and "Load more" in them for you;
 > - asks objkt's public data service (`data.objkt.com`) about offers, sales, listings and auctions, within its published rate limit;
@@ -21,7 +19,7 @@ It's the follow-up to [BUJKT](https://github.com/PixelSushiRobot/BUJKT), which s
 
 ## Features
 
-- **Social nav** at the top of the left rail: Home, Search, Notifications, Messages and Bookmarks, all opening in the feed column, with unread badges.
+- **Social nav** at the top of the left rail: Home, Search, Notifications, Messages and Bookmarks, all opening in the Objkt Social feed column, with unread badges.
 - **Notifications, regrouped**: each artist's new works become one row of large thumbnails, likes and follows are merged, and open offers stand out.
 - **Bookmarks, sorted by price**: every bookmark loads by itself, then sorts low → high or high → low, with artworks that have no price kept at the end.
 - **Messages** with the chat list and the open chat side by side.
@@ -33,7 +31,7 @@ It's the follow-up to [BUJKT](https://github.com/PixelSushiRobot/BUJKT), which s
 
 ## Installation
 
-This extension is not published on the Chrome Web Store.
+This extension is not published on the Chrome Web Store. The easiest way to get it is the download page: **[bujktsocial.psr.fyi](https://bujktsocial.psr.fyi)**.
 
 1. Download `bujkt-social.zip` from the [latest release](https://github.com/PixelSushiRobot/BUJKT-Social/releases/latest) and unzip it.
 1. Open Chrome and go to `chrome://extensions`.

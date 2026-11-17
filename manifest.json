@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BUJKT Social",
   "version": "1.0.1",
-  "description": "Unofficial. A smoother objkt social feed: notifications, messages and price-sorted bookmarks in one place.",
+  "description": "Unofficial. Makes Objkt Social smoother: notifications, messages and price-sorted bookmarks in one place.",
   "homepage_url": "https://bujktsocial.psr.fyi",
   "icons": {
     "16": "icons/favicon.png",
